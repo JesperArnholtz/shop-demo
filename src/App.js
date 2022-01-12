@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import Header from './components/header/header.component';
 import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
+import CheckoutPage from './pages/checkout/checkout.component';
 import SignInOut from './pages/sign-in-out/sign-in-out';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser  } from './redux/user/user.actions'
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 
 class App extends React.Component {
@@ -58,6 +60,7 @@ componentWillUnmount() {
         <Switch>
           <Route exact path="/" component={Homepage} />
           <Route path="/shop" component={ShopPage} />
+          <Route path="/checkout" component={CheckoutPage} />
           <Route exact path="/signin" render={() =>
             this.props.currentUser ? 
             <Redirect to="/" /> 
@@ -69,8 +72,8 @@ componentWillUnmount() {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = (state) => ({
+  currentUser: selectCurrentUser(state)
 })
 
 const mapDispatchToProps = dispatch => ({
