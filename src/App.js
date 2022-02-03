@@ -7,10 +7,10 @@ import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 import SignInOut from './pages/sign-in-out/sign-in-out';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
 import { setCurrentUser  } from './redux/user/user.actions'
 import { selectCurrentUser } from './redux/user/user.selectors';
-
+import { sellecColectionForPreview } from './redux/shop/shop.selector';
 
 class App extends React.Component {
 
@@ -18,7 +18,7 @@ class App extends React.Component {
 unsubscribeFromAuth = null
 
 componentDidMount() {
-  //const { setCurrentUser } = this.props;
+  const { setCurrentUser, collectionsArray } = this.props;
   this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
     if(userAuth) {
       const userRef = await createUserProfileDocument(userAuth);
@@ -37,14 +37,11 @@ componentDidMount() {
         //   }
         // })
       })
-    } else {
+    } 
      // this.setState({currentUser: userAuth})
-      this.props.setCurrentUser(userAuth)
-    }
-    //this.setState({ currentUser: user })
+      setCurrentUser(userAuth)
+    
     //createUserProfileDocument(user);
-    //console.log('USER: ', user)
-    //console.log(createUserProfileDocument)
   })
   
 }
@@ -73,7 +70,8 @@ componentWillUnmount() {
 }
 
 const mapStateToProps = (state) => ({
-  currentUser: selectCurrentUser(state)
+  currentUser: selectCurrentUser(state),
+  collectionsArray: sellecColectionForPreview(state)
 })
 
 const mapDispatchToProps = dispatch => ({
